@@ -1,0 +1,28 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="alert alert-danger">
+        <strong>Avertissement !</strong> Vous êtes en train de supprimer le trajet suivant :
+        <ul>
+            <li><strong>de : </strong> {{ trajet.villeDep }}</li>
+            <li><strong>à : </strong>{{ trajet.villeA }}</li>
+            <li><strong>Le : </strong>{{ trajet.dateDep|date("m/d/Y") }}</li>
+            <li><strong>à : </strong>{{ trajet.heureDep|date("h:m:i") }}</li>
+            <li><strong>Date de publication : </strong>{{ trajet.dateAjout|date('m/d/Y') }}</li>
+        </ul>
+    </div>
+
+    <div class="">
+    {{ form_start(form, {'attr': {'class': 'navbar-form navbar-left'}}) }}
+    {{ form_widget(form) }}
+    <a href="{{ path('trajet.list') }}" class="btn btn-success" role="button"><span class="glyphicon glyphicon-trash">Annuler</span></a>
+        <button type="submit" class="btn btn-danger" onclick="return confirm('Êtes vous sûr ??')">
+        Supprimer
+    </button>    
+    
+  {{ form_end(form) }}
+   
+    </div>
+     
+{% endblock %}
