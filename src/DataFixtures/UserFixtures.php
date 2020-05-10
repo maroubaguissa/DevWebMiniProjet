@@ -28,8 +28,21 @@ class UserFixtures extends Fixture
         $user->setAdresse("123 rue test");
         $user->setVille("testville");
         $user->setcp("44300");
-        $user->setPassword("user");
+        $user->setPassword($this->passwordEncoder->encodePassword($user, "user"));
+        $user->setRoles(['ROLE_USER']);
         $manager->persist($user);
+
+        $user1 = new Users();
+        $user1->setEmail("alpha@user.fr");
+        $user1->setNom("alpha");
+        $user1->setPrenom("oumar");
+        $user1->setTelephone("12345678");
+        $user1->setAdresse("123 rue test");
+        $user1->setVille("testville");
+        $user1->setcp("44300");
+        $user1->setPassword($this->passwordEncoder->encodePassword($user1, "alpha"));
+        $user1->setRoles(['ROLE_USER']);
+        $manager->persist($user1);
 
         $admin = new Users();
         $admin->setEmail("admin@admin.fr");
@@ -39,7 +52,8 @@ class UserFixtures extends Fixture
         $admin->setAdresse("123 rue test");
         $admin->setVille("testville");
         $admin->setCp("44300");
-        $admin->setPassword("admin");
+        $admin->setPassword($this->passwordEncoder->encodePassword($admin, "admin"));
+        $admin->setRoles(['ROLE_ADMIN']);
         $manager->persist($admin);
 
         $manager->flush();

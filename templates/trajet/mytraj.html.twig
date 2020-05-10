@@ -1,0 +1,26 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+        <div class="container row">
+           <div class="grid col-md-12">
+        {% for trajet in trajets %}
+            <div class="card" style="width: 18rem;">
+               <div class="card-body">
+                <h5 class="card-title"><a href=" {{path('trajet.show', {id: trajet.id}) }}">Depart: {{ trajet.villeDep}}</a></h5>
+                <h5 class="card-title">Arrivee: {{ trajet.villeA}}</h5>
+                <h5 class="card-title">Le: {{ trajet.DateDep|date("m/d/Y")}}</h5>
+                <h5 class="card-title">A {{ trajet.heureDep|date("h:m:i")}}</h5>
+                <h5 class="card-title">Prix: {{ trajet.price}}</h5>
+                <a href="#" class="btn btn-primary">Reserver</a>
+                <a href="{{path('trajet.edit', {id: trajet.id}) }}" class="btn btn-secondary">edit</a>
+                <a href="{{path('trajet.delete', {id: trajet.id}) }}" class="btn btn-danger">Del</a>
+               </div>
+            </div>
+        
+        {% endfor %}
+        </div>
+    </div>
+    
+{% endblock %}

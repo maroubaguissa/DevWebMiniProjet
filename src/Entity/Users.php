@@ -6,14 +6,15 @@ use App\Repository\UsersRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity()
  * @ORM\Table(name="Users")
- * @ORM\HasLifecycleCallbacks()
+ * @ORM\HasLifecycleCallbacks() 
  * @ORM\Entity(repositoryClass=UsersRepository::class)
  */
-class Users
+class Users implements UserInterface
 {
     /**
      * @ORM\Id()
@@ -21,6 +22,22 @@ class Users
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @ORM\Column(type="string", length=180, unique=true)
+     */
+    private $email;
+
+    /**
+     * @ORM\Column(type="json")
+     */
+    private $roles = [];
+
+    /**
+     * @var string The hashed password
+     * @ORM\Column(type="string")
+     */
+    private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -36,11 +53,6 @@ class Users
      * @ORM\Column(type="string", length=255)
      */
     private $telephone;
-
-    /**
-     * @ORM\Column(type="string", length=255)
-     */
-    private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -63,40 +75,91 @@ class Users
     private $date_ins;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\OneToMany(targetEntity=Trajet::class, mappedBy="users")
      */
-    private $email;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Trajet::class, mappedBy="user")
-     */
-    private $trajets;
-
-    /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="avis")
-     */
-    private $users;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Users::class, mappedBy="users")
-     */
-    private $avis;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="users")
-     */
-    private $booking;
+    private $trajet;
 
     public function __construct()
     {
-        $this->trajets = new ArrayCollection();
-        $this->avis = new ArrayCollection();
-        $this->booking = new ArrayCollection();
+        $this->trajet = new ArrayCollection();
     }
 
     public function getId(): ?int
     {
         return $this->id;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
+
+        return $this;
+    }
+
+    /**
+     * A visual identifier that represents this user.
+     *
+     * @see UserInterface
+     */
+    public function getUsername(): string
+    {
+        return (string) $this->email;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getRoles(): array
+    {
+        $roles = $this->roles;
+        // guarantee every user at least has ROLE_USER
+        $roles[] = 'ROLE_USER';
+
+        return array_unique($roles);
+    }
+
+    public function setRoles(array $roles): self
+    {
+        $this->roles = $roles;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getPassword(): string
+    {
+        return (string) $this->password;
+    }
+
+    public function setPassword(string $password): self
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function getSalt()
+    {
+        // not needed when using the "bcrypt" algorithm in security.yaml
+    }
+
+    /**
+     * @see UserInterface
+     */
+    public function eraseCredentials()
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 
     public function getNom(): ?string
@@ -131,18 +194,6 @@ class Users
     public function setTelephone(string $telephone): self
     {
         $this->telephone = $telephone;
-
-        return $this;
-    }
-
-    public function getPassword(): ?string
-    {
-        return $this->password;
-    }
-
-    public function setPassword(string $password): self
-    {
-        $this->password = $password;
 
         return $this;
     }
@@ -195,31 +246,19 @@ class Users
         return $this;
     }
 
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Trajet[]
      */
-    public function getTrajets(): Collection
+    public function getTrajet(): Collection
     {
-        return $this->trajets;
+        return $this->trajet;
     }
 
     public function addTrajet(Trajet $trajet): self
     {
-        if (!$this->trajets->contains($trajet)) {
-            $this->trajets[] = $trajet;
-            $trajet->setUser($this);
+        if (!$this->trajet->contains($trajet)) {
+            $this->trajet[] = $trajet;
+            $trajet->setUsers($this);
         }
 
         return $this;
@@ -227,85 +266,11 @@ class Users
 
     public function removeTrajet(Trajet $trajet): self
     {
-        if ($this->trajets->contains($trajet)) {
-            $this->trajets->removeElement($trajet);
+        if ($this->trajet->contains($trajet)) {
+            $this->trajet->removeElement($trajet);
             // set the owning side to null (unless already changed)
-            if ($trajet->getUser() === $this) {
-                $trajet->setUser(null);
-            }
-        }
-
-        return $this;
-    }
-
-    public function getUsers(): ?self
-    {
-        return $this->users;
-    }
-
-    public function setUsers(?self $users): self
-    {
-        $this->users = $users;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|self[]
-     */
-    public function getAvis(): Collection
-    {
-        return $this->avis;
-    }
-
-    public function addAvi(self $avi): self
-    {
-        if (!$this->avis->contains($avi)) {
-            $this->avis[] = $avi;
-            $avi->setUsers($this);
-        }
-
-        return $this;
-    }
-
-    public function removeAvi(self $avi): self
-    {
-        if ($this->avis->contains($avi)) {
-            $this->avis->removeElement($avi);
-            // set the owning side to null (unless already changed)
-            if ($avi->getUsers() === $this) {
-                $avi->setUsers(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Booking[]
-     */
-    public function getBooking(): Collection
-    {
-        return $this->booking;
-    }
-
-    public function addBooking(Booking $booking): self
-    {
-        if (!$this->booking->contains($booking)) {
-            $this->booking[] = $booking;
-            $booking->setUsers($this);
-        }
-
-        return $this;
-    }
-
-    public function removeBooking(Booking $booking): self
-    {
-        if ($this->booking->contains($booking)) {
-            $this->booking->removeElement($booking);
-            // set the owning side to null (unless already changed)
-            if ($booking->getUsers() === $this) {
-                $booking->setUsers(null);
+            if ($trajet->getUsers() === $this) {
+                $trajet->setUsers(null);
             }
         }
 
@@ -325,5 +290,9 @@ class Users
     public function preUpdate()
     {
       $this->date_ins = new \DateTime();
+    }
+
+    function __toString(){
+        return $this->nom;
     }
 }

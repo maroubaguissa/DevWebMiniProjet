@@ -16,7 +16,7 @@ class TrajetFixtures extends Fixture implements DependentFixtureInterface
     public function load(ObjectManager $manager) : void
     {
         $trajet1 = new Trajet();
-        $trajet1->setUser($manager->merge($this->getReference('user')))
+        $trajet1->setUsers($manager->merge($this->getReference('user')))
         ->setVilledep('Paris')
         ->setDateDep(new \DateTime('+10 days'))
         ->setHeureDep(new \DateTime('+1 hours'))
@@ -29,7 +29,7 @@ class TrajetFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($trajet1);
 
         $trajet2 = new Trajet();
-        $trajet2->setUser($manager->merge($this->getReference('user')))
+        $trajet2->setUsers($manager->merge($this->getReference('user')))
         ->setVilleDep('Marseille')
         ->setDateDep(new \DateTime('+11 days'))
         ->setHeureDep(new \DateTime('+1 hours'))
@@ -42,7 +42,7 @@ class TrajetFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($trajet2);
 
         $trajet3 = new Trajet();
-        $trajet3->setUser($manager->merge($this->getReference('user')))
+        $trajet3->setUsers($manager->merge($this->getReference('user')))
         ->setVilleDep('Nice')
         ->setDateDep(new \DateTime('+12 days'))
         ->setHeureDep(new \DateTime('+1 hours'))
@@ -55,7 +55,7 @@ class TrajetFixtures extends Fixture implements DependentFixtureInterface
         $manager->persist($trajet3);
 
         $trajet4 = new Trajet();
-        $trajet4->setUser($manager->merge($this->getReference('user')))
+        $trajet4->setUsers($manager->merge($this->getReference('user')))
         ->setVilleDep('Strasbourg')
         ->setDateDep(new \DateTime('+13 days'))
         ->setHeureDep(new \DateTime('+1 hours'))

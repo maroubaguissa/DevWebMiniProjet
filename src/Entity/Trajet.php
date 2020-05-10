@@ -7,6 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity()
  * @ORM\Table(name="Trajet")
@@ -67,10 +68,6 @@ class Trajet
      */
     private $date_ajout;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="trajets")
-     */
-    private $user;
 
     /**
      * @ORM\OneToMany(targetEntity=Booking::class, mappedBy="trajet")
@@ -81,6 +78,11 @@ class Trajet
      * @ORM\OneToMany(targetEntity=Avis::class, mappedBy="trajet")
      */
     private $avis;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Users::class, inversedBy="trajet")
+     */
+    private $users;
 
     public function __construct()
     {
@@ -201,18 +203,6 @@ class Trajet
         return $this;
     }
 
-    public function getUser(): ?Users
-    {
-        return $this->user;
-    }
-
-    public function setUser(?Users $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
     /**
      * @return Collection|Booking[]
      */
@@ -288,5 +278,22 @@ class Trajet
     public function preUpdate()
     {
       $this->date_ajout = new \DateTime();
+    }
+
+    public function __tostring(){
+
+        return $this->villedep;
+    }
+
+    public function getUsers(): ?Users
+    {
+        return $this->users;
+    }
+
+    public function setUsers(?Users $users): self
+    {
+        $this->users = $users;
+
+        return $this;
     }
 }
