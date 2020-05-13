@@ -6,6 +6,8 @@ use App\Repository\TrajetRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
+
 
 
 /**
@@ -50,6 +52,7 @@ class Trajet
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min=1, max=4)
      */
     private $nbrePlace;
 
@@ -60,6 +63,7 @@ class Trajet
 
     /**
      * @ORM\Column(type="integer")
+     * @Assert\Range(min=10)
      */
     private $distance;
 

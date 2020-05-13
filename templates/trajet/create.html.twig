@@ -1,15 +1,32 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
+    <div class="container mt-4">
     <h1>Proposition d'un trajet :</h1>
 
     {{ form_start(form) }}
+    <div class="row">
+        <div class="col-md-4">{{ form_row(form.villedep) }}</div>
+        <div class="col-md-4">{{ form_row(form.datedep) }}</div>
+        <div class="col-md-4">{{ form_row(form.heuredep) }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">{{ form_row(form.villeA) }}</div>
+        <div class="col-md-4">{{ form_row(form.heureA) }}</div>
+        <div class="col-md-2">{{ form_row(form.nbrePlace) }}</div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">{{ form_row(form.price) }}</div>
+        <div class="col-md-2">{{ form_row(form.distance) }}</div>
+    </div>
     {{ form_widget(form) }}
 
     <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-            <button type="submit" class="btn btn-default">Enregistrer</button>
+            <button class="btn btn-primary">Enregistrer</button>
         </div>
     </div>
     {{ form_end(form) }}
+
+    </div>
 {% endblock %}
